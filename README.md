@@ -27,7 +27,7 @@ Copy `.env.example` to `.env.local` and configure:
 cp .env.example .env.local
 ```
 
-- `REDIRECT_URL`: Where to redirect users after tracking (default: https://demo.wisdomous.io)
+- `REDIRECT_URL`: Where to redirect users after tracking (default: https://www.wisdomous.io)
 - `TRACKING_API_KEY`: API key for accessing tracking stats endpoint
 - `RESEND_API_KEY`: Your Resend API key for sending email notifications
 - `NOTIFICATION_EMAIL`: Email address to receive click notifications
@@ -81,7 +81,7 @@ https://your-domain.vercel.app/invite?key=a6cfd525-c625-4caf-b6a1-1097f933f0bb
 
 When a valid invite key is clicked:
 1. The key is validated against Upstash Redis
-2. If valid, user is redirected to demo.wisdomous.io
+2. If valid, user is redirected to www.wisdomous.io
 3. If the invite key has associated email/password, they're added as query parameters for auto-login
 
 ### Tracking API

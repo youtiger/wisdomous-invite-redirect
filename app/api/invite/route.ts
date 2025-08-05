@@ -5,7 +5,7 @@ import { sendInviteClickNotification } from '@/lib/email';
 import { validateInviteKey, getInviteData } from '@/lib/redis';
 
 // Redirect URL - can be configured via environment variable
-const REDIRECT_URL = process.env.REDIRECT_URL || 'https://demo.wisdomous.io';
+const REDIRECT_URL = process.env.REDIRECT_URL || 'https://www.wisdomous.io';
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
