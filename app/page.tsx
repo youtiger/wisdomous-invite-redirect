@@ -49,7 +49,7 @@ export default function Home() {
           
           <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Don&apos;t have an invite key? Contact{' '}
+              Don&apos;t have an invite key? Say{' '}
               <a 
                 href="mailto:hello@wisdomous.io" 
                 className="text-blue-600 hover:underline"
@@ -62,10 +62,6 @@ export default function Home() {
               </a>
             </p>
           </div>
-        </div>
-        
-        <div className="mt-8 text-xs text-gray-500 dark:text-gray-400">
-          <p>Powered by Next.js on Vercel</p>
         </div>
       </main>
     </div>

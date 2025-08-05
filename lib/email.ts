@@ -1,7 +1,5 @@
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 interface InviteClickNotification {
   key: string;
   timestamp: string;
@@ -13,11 +11,14 @@ interface InviteClickNotification {
 export async function sendInviteClickNotification(data: InviteClickNotification): Promise<void> {
   try {
     const notificationEmail = process.env.NOTIFICATION_EMAIL;
+    const resendApiKey = process.env.RESEND_API_KEY;
     
-    if (!notificationEmail) {
-      console.log('NOTIFICATION_EMAIL not configured, skipping email notification');
+    if (!notificationEmail || !resendApiKey) {
+      console.log('Email notifications not configured, skipping');
       return;
     }
+
+    const resend = new Resend(resendApiKey);
 
     const { data: emailData, error } = await resend.emails.send({
       from: 'Wisdomous Invites <invites@wisdomous.io>',
