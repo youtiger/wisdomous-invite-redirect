@@ -6,6 +6,7 @@ A Next.js application that handles invite link tracking and redirects for Wisdom
 
 - Accepts invite links with format: `/invite?key=<unique-key>`
 - Tracks clicks using Vercel KV (Redis) and Vercel Analytics
+- Sends real-time email notifications via Resend when links are clicked
 - Redirects users to configured demo URL
 - Provides API endpoint for viewing tracking statistics
 
@@ -27,6 +28,8 @@ cp .env.example .env.local
 
 - `REDIRECT_URL`: Where to redirect users after tracking (default: https://demo.wisdomous.io)
 - `TRACKING_API_KEY`: API key for accessing tracking stats endpoint
+- `RESEND_API_KEY`: Your Resend API key for sending email notifications
+- `NOTIFICATION_EMAIL`: Email address to receive click notifications
 
 ### 3. Vercel KV Setup
 
@@ -97,12 +100,19 @@ Response:
 2. Test with a sample invite link
 3. Monitor analytics in Vercel dashboard
 
-## Analytics
+## Analytics & Notifications
 
 The app tracks:
 - Click events in Vercel Analytics (as `invite_click` events)
 - Detailed click data in Vercel KV
 - Request logs in Vercel Functions logs
+
+Email notifications include:
+- Invite key clicked
+- Timestamp of click
+- User's IP address
+- Referrer URL
+- User agent information
 
 ## Development Notes
 

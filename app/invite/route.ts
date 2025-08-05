@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { trackClick } from '@/lib/tracking';
 import { track } from '@vercel/analytics/server';
+import { sendInviteClickNotification } from '@/lib/email';
 
 // Redirect URL - can be configured via environment variable
 const REDIRECT_URL = process.env.REDIRECT_URL || 'https://demo.wisdomous.io';
@@ -33,6 +34,9 @@ export async function GET(request: NextRequest) {
     key,
     timestamp: trackingData.timestamp
   }).catch(console.error);
+
+  // Send email notification (non-blocking)
+  sendInviteClickNotification(trackingData).catch(console.error);
 
   // Log for debugging
   console.log(`Invite link clicked:`, trackingData);
