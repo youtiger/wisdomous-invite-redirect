@@ -19,7 +19,12 @@ export default function InvitePage() {
       // Auto-redirect after a short delay to show the UI
       setTimeout(() => {
         setIsLoading(true);
-        router.push(`/api/invite?key=${encodeURIComponent(keyFromUrl)}`);
+        // Check if it's the Y Combinator key
+        if (keyFromUrl === 'a6cfd525-c625-4caf-b6a1-1097f933f0bb') {
+          router.push(`/yc-welcome?key=${encodeURIComponent(keyFromUrl)}`);
+        } else {
+          router.push(`/api/invite?key=${encodeURIComponent(keyFromUrl)}`);
+        }
       }, 1000);
     }
   }, [router]);
@@ -28,7 +33,12 @@ export default function InvitePage() {
     e.preventDefault();
     if (inviteKey.trim()) {
       setIsLoading(true);
-      router.push(`/api/invite?key=${encodeURIComponent(inviteKey.trim())}`);
+      // Check if it's the Y Combinator key
+      if (inviteKey.trim() === 'a6cfd525-c625-4caf-b6a1-1097f933f0bb') {
+        router.push(`/yc-welcome?key=${encodeURIComponent(inviteKey.trim())}`);
+      } else {
+        router.push(`/api/invite?key=${encodeURIComponent(inviteKey.trim())}`);
+      }
     }
   };
 
