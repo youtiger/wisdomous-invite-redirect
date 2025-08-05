@@ -1,5 +1,10 @@
 import { Redis } from '@upstash/redis';
 import { v4 as uuidv4 } from 'uuid';
+import * as dotenv from 'dotenv';
+import * as path from 'path';
+
+// Load environment variables from .env.local
+dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
 
 // Demo users from CLAUDE.md
 const demoUsers = [
@@ -31,7 +36,8 @@ const demoUsers = [
     name: 'Franziska Chen-Mueller (Head of Digital Innovation)',
     email: 'franziska.chen-mueller@steinbach-precision.de',
     password: 'Demo2025!',
-    company: 'Steinbach Precision Systems GmbH'
+    company: 'Steinbach Precision Systems GmbH',
+    fixedKey: 'a6cfd525-c625-4caf-b6a1-1097f933f0bb' // Use specific key for Franziska
   },
   {
     name: 'Demo User',
@@ -58,7 +64,8 @@ async function generateInviteKeys() {
   console.log('Generating invite keys for demo users...\n');
 
   for (const user of demoUsers) {
-    const inviteKey = uuidv4();
+    // Use fixed key if provided, otherwise generate a new one
+    const inviteKey = (user as any).fixedKey || uuidv4();
     const inviteData = {
       email: user.email,
       password: user.password,
