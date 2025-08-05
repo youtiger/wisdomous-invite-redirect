@@ -4,98 +4,71 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function YCWelcome() {
-  const [countdown, setCountdown] = useState(5);
+  const [key, setKey] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
     // Get key from URL params on client side
     const urlParams = new URLSearchParams(window.location.search);
     const keyFromUrl = urlParams.get('key');
+    setKey(keyFromUrl);
 
     if (!keyFromUrl) {
       router.push('/');
-      return;
     }
-
-    const timer = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          // Redirect to the API route which will handle the actual redirect
-          router.push(`/api/invite?key=${encodeURIComponent(keyFromUrl)}`);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
   }, [router]);
 
+  const handleStartDemo = () => {
+    if (key) {
+      setIsLoading(true);
+      router.push(`/api/invite?key=${encodeURIComponent(key)}`);
+    }
+  };
+
   return (
-    <div className="font-sans flex items-center justify-center min-h-screen p-8 bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
-      <main className="text-center max-w-2xl w-full">
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-12">
-          <div className="mb-8">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-orange-500 rounded-full mb-4">
-              <svg className="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M22 12C22 6.48 17.52 2 12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 12 17.52 22 12ZM12 4C16.42 4 20 7.58 20 12C20 16.42 16.42 20 12 20C7.58 20 4 16.42 4 12C4 7.58 7.58 4 12 4Z"/>
-                <path d="M13 7H11V12L15.25 14.15L16 12.92L12.5 11.25V7Z"/>
-              </svg>
-            </div>
-            <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">
-              Welcome, Y Combinator!
-            </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-300">
-              Thank you for your interest in Wisdomous
+    <div className="font-sans flex items-center justify-center min-h-screen p-8 bg-gray-50 dark:bg-gray-900">
+      <main className="max-w-4xl w-full">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
+          <h1 className="text-3xl font-bold mb-6">Welcome to the Steinbach Precision Systems Demo</h1>
+          
+          <div className="prose dark:prose-invert max-w-none mb-8">
+            <p className="text-gray-600 dark:text-gray-400 mb-4">
+              You&apos;re about to experience Wisdomous through the lens of Steinbach Precision Systems GmbH, a leading German precision machinery manufacturer serving aerospace and automotive industries. In this demo, you&apos;ll step into the Smart Factory Initiative 2025 - a critical digital transformation project aimed at achieving 30% efficiency gains through IoT integration and predictive maintenance.
+            </p>
+
+            <h2 className="text-xl font-semibold mt-6 mb-4">Your First 5 Minutes:</h2>
+            
+            <ol className="space-y-4 text-gray-700 dark:text-gray-300">
+              <li>
+                <strong>Explore the Stakeholder Landscape</strong> - Navigate to the AI Agents section to meet your 14 diverse stakeholders, from Werner Steinbach (traditionalist CEO) to Chen Wei (innovation-focused engineer). Notice how each has unique personalities, hidden agendas, and complex relationships that mirror real organizational dynamics.
+              </li>
+              <li>
+                <strong>Review the Project Journey</strong> - Check the Smart Factory roadmap in the Journeys section. See how the project evolves from initial IoT sensor deployment through to full predictive maintenance implementation, with realistic challenges and decision points.
+              </li>
+              <li>
+                <strong>Run a Stakeholder Simulation</strong> - Try the &ldquo;Prioritization Meeting&rdquo; simulation to watch your stakeholders debate feature priorities. Observe how Werner&apos;s cost concerns clash with Franziska&apos;s innovation drive, while Chen Wei pushes technical excellence and Helga advocates for workforce considerations.
+              </li>
+              <li>
+                <strong>Check the Knowledge Base</strong> - Browse technical specifications and meeting notes that capture the organization&apos;s collective intelligence about smart manufacturing, Industry 4.0 standards, and change management strategies.
+              </li>
+              <li>
+                <strong>Generate Insights</strong> - Use the AI Assistant to interview specific stakeholders about their concerns. Try asking Werner about ROI or Helga about workforce training needs to uncover hidden requirements before any code is written.
+              </li>
+            </ol>
+
+            <p className="text-gray-600 dark:text-gray-400 mt-6">
+              This demo showcases how Wisdomous prevents the typical 60% enterprise software failure rate by surfacing organizational dynamics, hidden resistances, and unspoken requirements before development begins.
             </p>
           </div>
 
-          <div className="mb-8 text-left bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
-            <h2 className="text-lg font-semibold mb-3">You&apos;re about to experience:</h2>
-            <ul className="space-y-2 text-gray-700 dark:text-gray-300">
-              <li className="flex items-start">
-                <svg className="w-5 h-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-                </svg>
-                <span>A personalized demo as <strong>Franziska Chen-Mueller</strong></span>
-              </li>
-              <li className="flex items-start">
-                <svg className="w-5 h-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-                </svg>
-                <span>Head of Digital Innovation at <strong>Steinbach Precision Systems GmbH</strong></span>
-              </li>
-              <li className="flex items-start">
-                <svg className="w-5 h-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-                </svg>
-                <span>Full access to explore our enterprise features</span>
-              </li>
-              <li className="flex items-start">
-                <svg className="w-5 h-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-                </svg>
-                <span>Pre-configured workspace with sample data</span>
-              </li>
-            </ul>
-          </div>
-
-          <div className="mb-6">
-            <div className="text-5xl font-bold text-orange-500 mb-2">{countdown}</div>
-            <p className="text-gray-600 dark:text-gray-400">
-              Redirecting to your personalized demo...
-            </p>
-          </div>
-
-          <div className="pt-6 border-t border-gray-200 dark:border-gray-700">
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Need help? Reach out to us at{' '}
-              <a href="mailto:yc@wisdomous.io" className="text-orange-500 hover:underline">
-                yc@wisdomous.io
-              </a>
-            </p>
-          </div>
+          <button
+            onClick={handleStartDemo}
+            disabled={isLoading || !key}
+            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 disabled:cursor-not-allowed"
+          >
+            {isLoading ? 'Starting Demo...' : 'Start Demo'}
+          </button>
         </div>
       </main>
     </div>
