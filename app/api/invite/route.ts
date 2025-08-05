@@ -67,7 +67,8 @@ export async function GET(request: NextRequest) {
   track('invite_click', {
     key,
     timestamp: trackingData.timestamp,
-    isValid: true
+    isValid: true,
+    isYCombinator: key === YCOMBINATOR_KEY
   }).catch(console.error);
 
   // Send email notification (non-blocking)

@@ -21,7 +21,7 @@ export async function sendInviteClickNotification(data: InviteClickNotification)
     const resend = new Resend(resendApiKey);
 
     const { data: emailData, error } = await resend.emails.send({
-      from: 'Wisdomous Invites <invites@wisdomous.io>',
+      from: 'Wisdomous Invites <invites@notifications.wisdomous.dev>',
       to: [notificationEmail],
       subject: `Invite Link Clicked: ${data.key}`,
       html: `
