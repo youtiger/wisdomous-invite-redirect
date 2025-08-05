@@ -1,36 +1,111 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Wisdomous Invite Redirect
 
-## Getting Started
+A Next.js application that handles invite link tracking and redirects for Wisdomous demo.
 
-First, run the development server:
+## Features
+
+- Accepts invite links with format: `/invite?key=<unique-key>`
+- Tracks clicks using Vercel KV (Redis) and Vercel Analytics
+- Redirects users to configured demo URL
+- Provides API endpoint for viewing tracking statistics
+
+## Setup
+
+### 1. Install Dependencies
+
+```bash
+npm install
+```
+
+### 2. Environment Variables
+
+Copy `.env.example` to `.env.local` and configure:
+
+```bash
+cp .env.example .env.local
+```
+
+- `REDIRECT_URL`: Where to redirect users after tracking (default: https://demo.wisdomous.io)
+- `TRACKING_API_KEY`: API key for accessing tracking stats endpoint
+
+### 3. Vercel KV Setup
+
+When deploying to Vercel:
+
+1. Go to your project dashboard
+2. Navigate to Storage tab
+3. Create a new KV database
+4. Connect it to your project (this automatically sets the KV environment variables)
+
+### 4. Development
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Visit http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Usage
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Invite Links
 
-## Learn More
+Share invite links in this format:
+```
+https://your-domain.vercel.app/invite?key=a6cfd525-c625-4caf-b6a1-1097f933f0bb
+```
 
-To learn more about Next.js, take a look at the following resources:
+### Tracking API
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+View tracking statistics:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+curl -H "Authorization: Bearer your-api-key" https://your-domain.vercel.app/api/tracking
+```
 
-## Deploy on Vercel
+Response:
+```json
+{
+  "totalClicks": 42,
+  "uniqueKeys": 12,
+  "last24Hours": 18,
+  "clicks": [
+    {
+      "key": "a6cfd525-c625-4caf-b6a1-1097f933f0bb",
+      "timestamp": "2024-01-15T10:30:00Z",
+      "userAgent": "Mozilla/5.0...",
+      "ip": "192.168.1.1",
+      "referer": "https://example.com"
+    }
+  ]
+}
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Deployment
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Deploy to Vercel
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/your-org/wisdomous-invite-redirect)
+
+1. Click the deploy button
+2. Configure environment variables
+3. Connect Vercel KV database
+4. Deploy
+
+### Post-Deployment
+
+1. Set up your subdomain to point to this Vercel app
+2. Test with a sample invite link
+3. Monitor analytics in Vercel dashboard
+
+## Analytics
+
+The app tracks:
+- Click events in Vercel Analytics (as `invite_click` events)
+- Detailed click data in Vercel KV
+- Request logs in Vercel Functions logs
+
+## Development Notes
+
+- Tracking data is stored in Vercel KV with automatic cleanup (keeps last 1000 clicks)
+- The redirect is performed server-side for better tracking accuracy
+- All tracking is non-blocking to ensure fast redirects
