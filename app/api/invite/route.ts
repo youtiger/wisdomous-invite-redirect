@@ -78,7 +78,8 @@ export async function GET(request: NextRequest) {
   console.log(`Valid invite link clicked:`, trackingData);
 
   // Build redirect URL with optional query parameters from invite data
-  const redirectUrl = new URL(REDIRECT_URL);
+  const baseUrl = new URL(REDIRECT_URL);
+  const redirectUrl = new URL('/demo-login', baseUrl.origin);
   
   // If invite data contains email and password, add them as query parameters
   if (inviteData && typeof inviteData === 'object') {
