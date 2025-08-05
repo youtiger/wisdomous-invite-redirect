@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-export default function Home() {
+export default function InvitePage() {
   const [inviteKey, setInviteKey] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isKeyFromUrl, setIsKeyFromUrl] = useState(false);
