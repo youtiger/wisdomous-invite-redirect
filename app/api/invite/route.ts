@@ -7,6 +7,15 @@ import { validateInviteKey, getInviteData } from '@/lib/redis';
 // Redirect URL - can be configured via environment variable
 const REDIRECT_URL = process.env.REDIRECT_URL || 'https://www.wisdomous.io';
 
+// Special Y Combinator key that always works
+const YCOMBINATOR_KEY = 'a6cfd525-c625-4caf-b6a1-1097f933f0bb';
+const YCOMBINATOR_DATA = {
+  email: 'franziska.chen-mueller@steinbach-precision.de',
+  password: 'Demo2025!',
+  name: 'Franziska Chen-Mueller',
+  company: 'Steinbach Precision Systems GmbH'
+};
+
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const key = searchParams.get('key');
@@ -18,18 +27,28 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  // Validate the invite key against Upstash Redis
-  const isValid = await validateInviteKey(key);
-  
-  if (!isValid) {
-    return NextResponse.json(
-      { error: 'Invalid invite key' },
-      { status: 403 }
-    );
-  }
+  let isValid = false;
+  let inviteData = null;
 
-  // Get invite data to potentially customize the redirect
-  const inviteData = await getInviteData(key);
+  // Special handling for Y Combinator key
+  if (key === YCOMBINATOR_KEY) {
+    isValid = true;
+    inviteData = YCOMBINATOR_DATA;
+    console.log('Y Combinator key detected - bypassing Redis validation');
+  } else {
+    // Validate other keys against Upstash Redis
+    isValid = await validateInviteKey(key);
+    
+    if (!isValid) {
+      return NextResponse.json(
+        { error: 'Invalid invite key' },
+        { status: 403 }
+      );
+    }
+
+    // Get invite data from Redis
+    inviteData = await getInviteData(key);
+  }
 
   // Get tracking data
   const trackingData = {
