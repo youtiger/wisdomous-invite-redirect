@@ -1,12 +1,28 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function Home() {
   const [inviteKey, setInviteKey] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isKeyFromUrl, setIsKeyFromUrl] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    // Check URL parameters on client side
+    const urlParams = new URLSearchParams(window.location.search);
+    const keyFromUrl = urlParams.get('key');
+    if (keyFromUrl) {
+      setInviteKey(keyFromUrl);
+      setIsKeyFromUrl(true);
+      // Auto-redirect after a short delay to show the UI
+      setTimeout(() => {
+        setIsLoading(true);
+        router.push(`/invite?key=${encodeURIComponent(keyFromUrl)}`);
+      }, 1000);
+    }
+  }, [router]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,11 +46,12 @@ export default function Home() {
               <input
                 type="text"
                 value={inviteKey}
-                onChange={(e) => setInviteKey(e.target.value)}
+                onChange={(e) => !isKeyFromUrl && setInviteKey(e.target.value)}
                 placeholder="Enter your invite key"
                 className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
                 disabled={isLoading}
-                autoFocus
+                readOnly={isKeyFromUrl}
+                autoFocus={!isKeyFromUrl}
               />
             </div>
             
@@ -43,7 +60,7 @@ export default function Home() {
               disabled={!inviteKey.trim() || isLoading}
               className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200 disabled:cursor-not-allowed"
             >
-              {isLoading ? 'Redirecting...' : 'Access Demo'}
+              {isLoading ? 'Redirecting...' : isKeyFromUrl ? 'Redirecting automatically...' : 'Access Demo'}
             </button>
           </form>
           
