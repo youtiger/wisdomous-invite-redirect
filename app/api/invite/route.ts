@@ -16,6 +16,10 @@ const YCOMBINATOR_DATA = {
   company: 'Steinbach Precision Systems GmbH'
 };
 
+// Simple in-memory cache to prevent duplicate emails
+const emailCache = new Map<string, number>();
+const EMAIL_COOLDOWN_MS = 10000; // 10 seconds cooldown
+
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const key = searchParams.get('key');
@@ -71,8 +75,25 @@ export async function GET(request: NextRequest) {
     isYCombinator: key === YCOMBINATOR_KEY
   }).catch(console.error);
 
-  // Send email notification (non-blocking)
-  sendInviteClickNotification(trackingData).catch(console.error);
+  // Send email notification (non-blocking) with deduplication
+  const emailKey = `${key}-${trackingData.ip || 'unknown'}`;
+  const lastEmailTime = emailCache.get(emailKey);
+  const now = Date.now();
+  
+  if (!lastEmailTime || now - lastEmailTime > EMAIL_COOLDOWN_MS) {
+    emailCache.set(emailKey, now);
+    // Clean up old entries periodically
+    if (emailCache.size > 100) {
+      for (const [k, v] of emailCache.entries()) {
+        if (now - v > EMAIL_COOLDOWN_MS * 2) {
+          emailCache.delete(k);
+        }
+      }
+    }
+    sendInviteClickNotification(trackingData).catch(console.error);
+  } else {
+    console.log(`Skipping duplicate email for key ${key} (cooldown active)`);
+  }
 
   // Log for debugging
   console.log(`Valid invite link clicked:`, trackingData);
